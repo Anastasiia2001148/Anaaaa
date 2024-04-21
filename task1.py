@@ -14,4 +14,4 @@ def get_days_from_today(date):
    except ValueError:
     return print("Does not match format")
 
-get_days_from_today('2024-06-09')
+get_days_from_today('2024-06-10')
