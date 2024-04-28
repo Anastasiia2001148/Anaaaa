@@ -1,13 +1,17 @@
-from random import randint,sample
-def get_numbers_ticket(min,max,quantity):
-    lotery_numbers = set()
-    while len(lotery_numbers)<quantity:
-        try:
-           lotery_numbers.add(randint(min, max))
-           print(sorted(sample(range(1, 1000), quantity)))
-           break
-        except TypeError:
-            print("Not right format")
-            break
+def get_cats_info(path):
+    cats = []
 
-get_numbers_ticket(1,49,6)
+    try:
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                cats_info = line.strip().split(',')
+                cat_d= ({'id': cats_info[0],'name': cats_info[1],'age': cats_info[2]})
+                cats.append(cat_d)
+            return cats
+    except FileNotFoundError:
+        print('File not found')
+
+
+path = 'Temp/cats.txt'
+cats = get_cats_info(path)
+print(f'{cats}')

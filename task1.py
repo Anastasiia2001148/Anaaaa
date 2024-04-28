@@ -1,17 +1,22 @@
-from datetime import datetime
-def get_days_from_today(date):
-   try:
-        date_old = datetime.strptime(date, '%Y-%m-%d').date()
-        current_date = datetime.today().date()
-        if date_old > current_date:
-            count_days = date_old-current_date
-            return print(count_days.days)
-        elif date_old < current_date:
-            count_days = current_date - date_old
-            return print(-count_days.days)
-        else:
-            return print('Dates are equal')
-   except ValueError:
-    return print("Does not match format")
+def total_salary(path):
+    total = 0
+    count = 0
+    try:
+        with open(path, 'r', encoding='utf-8') as file:
+            for line in file:
+                name, salary_all = line.split(',')
+                try:
+                    salary = int(salary_all)
+                    total += salary
+                    count += 1
+                except ValueError:
+                    print('Value Error')
+        average = total // count
+        return total, average
+    except FileNotFoundError:
+        print('File not found')
 
-get_days_from_today('2024-06-10')
+path = 'Temp/salary.txt'
+total, average = total_salary(path)
+print(f'Загальна сума зарплати: {total}, Середня зарплата: {average}')
+
