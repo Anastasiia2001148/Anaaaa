@@ -12,6 +12,6 @@ def get_cats_info(path):
         print('File not found')
 
 
-path = 'Temp/cats.txt'
+path = 'temp/cats.txt'
 cats = get_cats_info(path)
 print(f'{cats}')
