@@ -22,7 +22,7 @@ def input_error(func):
 def add_contact(args, contacts):
     name, phone = args
     contacts[name] = phone
-    return "Contact added."
+    print("Contact added.")
 @input_error
 def change_contact(name, new_phone):
     if name in contacts:
@@ -55,7 +55,7 @@ def main():
         elif command == "hello":
             print("How can I help you?")
         elif command == "add":
-            print(add_contact(args, contacts))
+            (add_contact(args, contacts))
         elif command == 'change':
             (change_contact(*args))
         elif command == 'phone':

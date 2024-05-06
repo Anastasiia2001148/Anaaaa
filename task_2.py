@@ -1,17 +1,15 @@
-def get_cats_info(path):
-    cats = []
 
-    try:
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                cats_info = line.strip().split(',')
-                cat_d= ({'id': cats_info[0],'name': cats_info[1],'age': cats_info[2]})
-                cats.append(cat_d)
-            return cats
-    except FileNotFoundError:
-        print('File not found')
+from typing import Callable
 
+def generator_numbers(text:str):
+    numbers = [float(word) for word in text.split() if word.replace('.','').isdigit()]
+    yield from numbers
+    
+def sum_profit(text:str, func:Callable):
+    generator = func(text)
+    total_income = sum(generator)
+    return total_income
 
-path = 'temp/cats.txt'
-cats = get_cats_info(path)
-print(f'{cats}')
+text = "Загальний дохід працівника складається з декількох частин: 1000.01 як основний дохід, доповнений додатковими надходженнями 27.45 і 324.00 доларів."
+total_income = sum_profit(text, generator_numbers)
+print(f"Загальний дохід: {total_income}")
