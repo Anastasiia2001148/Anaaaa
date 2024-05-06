@@ -1,22 +1,17 @@
-def total_salary(path):
-    total = 0
-    count = 0
-    try:
-        with open(path, 'r', encoding='utf-8') as file:
-            for line in file:
-                name, salary_all = line.split(',')
-                try:
-                    salary = int(salary_all)
-                    total += salary
-                    count += 1
-                except ValueError:
-                    print('Value Error')
-        average = total // count
-        return total, average
-    except FileNotFoundError:
-        print('File not found')
+def caching_fibonacci():
+    cache = {}
+    def fibonacci(n):
+        if n <= 0:
+            return 0
+        elif n == 1:
+            return 1
+        elif n in cache:
+            return cache[n]
+        else:
+            cache[n] = fibonacci(n - 1) + fibonacci(n - 2)
+            return cache[n]
+    return fibonacci
 
-path = 'Temp/salary.txt'
-total, average = total_salary(path)
-print(f'Загальна сума зарплати: {total}, Середня зарплата: {average}')
+fib = caching_fibonacci()
+print(fib(10))
 
