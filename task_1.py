@@ -1,5 +1,6 @@
 from collections import UserDict
 import datetime
+import pickle
 
 class Field:
     def __init__(self, value):
@@ -37,7 +38,7 @@ class Record:
         return [i for i in self.phones if i.value == phone]
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {','.join(p.value for p in self.phones)}"
+        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
 
 class AddressBook(UserDict):
     def add_record(self, record):
@@ -54,7 +55,7 @@ class Birthday(Field):
         try:
             self.value = datetime.datetime.strptime(value, '%d.%m.%Y')
         except ValueError:
-            raise ValueError("Invalid date format")
+            raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
 class InputError(Exception):
     pass
@@ -87,7 +88,7 @@ class RecordBook(AddressBook):
         name = args[0]
         record = self.find(name)
         if record and record.birthday:
-            return f"{name} has birthday  {record.birthday.value.strftime('%d.%m.%Y')}."
+            return f"{name} has birthday on {record.birthday.value.strftime('%d.%m.%Y')}."
         else:
             raise InputError("Birthday not found.")
 
@@ -98,9 +99,19 @@ class RecordBook(AddressBook):
         upcoming_birthdays = [name for name, record in self.data.items() if record.birthday and today < record.birthday.value < next_week]
         return f"Upcoming birthdays: {', '.join(upcoming_birthdays)}"
 
-@input_error
+def save_data(book, filename="addressbook.pkl"):
+    with open(filename, "wb") as f:
+        pickle.dump(book, f)
+
+def load_data(filename="addressbook.pkl"):
+    try:
+        with open(filename, "rb") as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        return AddressBook()  # Повернення нової адресної книги, якщо файл не знайдено
+
 def main():
-    book = RecordBook()
+    book = load_data()
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -108,6 +119,7 @@ def main():
 
         if command in ["close", "exit"]:
             print("Good bye!")
+            save_data(book)
             break
 
         elif command == "hello":
@@ -117,17 +129,17 @@ def main():
             name, phone = args
             book.add_record(Record(name))
             book[name].add_phone(phone)
-            print(f"Contact {name} added, phone {phone}.")
+            print(f"Contact {name} added with phone {phone}.")
 
         elif command == "change":
             name, new_phone, old_phone = args
             book[name].edit_phone(new_phone, old_phone)
-            print(f"Updated for {name}.")
+            print(f"updated for {name}.")
 
         elif command == "phone":
             name = args[0]
             phones = [str(phone) for phone in book[name].phones]
-            print(f"Numbers for {name}: {', '.join(phones)}")
+            print(f"Phone numbers for {name}: {', '.join(phones)}")
 
         elif command == "all":
             for name, record in book.data.items():
@@ -145,6 +157,8 @@ def main():
 
         else:
             print("Invalid command.")
+
+
 
 if __name__ == "__main__":
     main()
